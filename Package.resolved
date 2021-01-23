@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "BogusApp-Common-Utils",
+        "repositoryURL": "/Users/mariusjcb/Documents/Developer/BogusApp/Common/BogusApp-Common-Utils",
+        "state": {
+          "branch": "master",
+          "revision": "dd2bf88635a6ae44d607187709de43d7d0336203",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

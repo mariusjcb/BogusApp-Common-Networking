@@ -12,7 +12,7 @@ let package = Package(
             targets: ["BogusApp-Common-Networking"]),
     ],
     dependencies: [
-        .package(name: "BogusApp-Common-Utils", url: "../BogusApp-Common-Utils.git", .branch("master"))
+        .package(name: "BogusApp-Common-Utils", url: "../BogusApp-Common-Utils", .branch("master"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
