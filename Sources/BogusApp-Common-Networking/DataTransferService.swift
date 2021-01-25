@@ -21,7 +21,7 @@ public protocol DataTransferErrorResolver {
 
 public protocol DataTransferService {
     typealias CompletionHandler<T> = (Result<T, DataTransferError>) -> Void
-    
+
     @discardableResult
     func request<T: Decodable, E: ResponseRequestable>(with endpoint: E,
                                                        completion: @escaping CompletionHandler<T>) -> NetworkCancellable? where E.Response == T
@@ -31,11 +31,11 @@ public protocol DataTransferService {
 }
 
 public final class DefaultDataTransferService: DataTransferService {
-    
+
     private let networkService: NetworkService
     private let errorResolver: DataTransferErrorResolver
     private let errorLogger: DataTransferErrorLogger
-    
+
     public init(with networkService: NetworkService,
                 errorResolver: DataTransferErrorResolver = DefaultDataTransferErrorResolver(),
                 errorLogger: DataTransferErrorLogger = DefaultDataTransferErrorLogger()) {
@@ -43,7 +43,7 @@ public final class DefaultDataTransferService: DataTransferService {
         self.errorResolver = errorResolver
         self.errorLogger = errorLogger
     }
-    
+
     public func request<T: Decodable, E: ResponseRequestable>(with endpoint: E,
                                                               completion: @escaping CompletionHandler<T>) -> NetworkCancellable? where E.Response == T {
 
@@ -60,7 +60,7 @@ public final class DefaultDataTransferService: DataTransferService {
         }
     }
 
-    public func request<E>(with endpoint: E, completion: @escaping CompletionHandler<Void>) -> NetworkCancellable? where E : ResponseRequestable, E.Response == Void {
+    public func request<E>(with endpoint: E, completion: @escaping CompletionHandler<Void>) -> NetworkCancellable? where E: ResponseRequestable, E.Response == Void {
         return self.networkService.request(endpoint: endpoint) { result in
             switch result {
             case .success:
@@ -84,7 +84,7 @@ public final class DefaultDataTransferService: DataTransferService {
             return .failure(.parsing(error))
         }
     }
-    
+
     private func resolve(networkError error: NetworkError) -> DataTransferError {
         let resolvedError = self.errorResolver.resolve(error: error)
         return resolvedError is NetworkError ? .networkFailure(error) : .resolvedNetworkFailure(resolvedError)
@@ -94,7 +94,7 @@ public final class DefaultDataTransferService: DataTransferService {
 // MARK: - Logger
 public final class DefaultDataTransferErrorLogger: DataTransferErrorLogger {
     public init() { }
-    
+
     public func log(error: Error) {
         printIfDebug("-------------")
         printIfDebug("\(error)")

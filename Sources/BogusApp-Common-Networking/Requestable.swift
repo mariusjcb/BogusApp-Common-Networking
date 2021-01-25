@@ -17,7 +17,7 @@ public protocol Requestable {
     var bodyParamatersEncodable: Encodable? { get }
     var bodyParamaters: [String: Any] { get }
     var bodyEncoding: BodyEncoding { get }
-    
+
     func urlRequest(with networkConfig: NetworkConfigurable) throws -> URLRequest
 }
 
@@ -27,12 +27,12 @@ public protocol ResponseRequestable: Requestable {
 }
 
 extension Requestable {
-    
+
     func url(with config: NetworkConfigurable) throws -> URL {
 
         let baseURL = config.baseURL.absoluteString.last != "/" ? config.baseURL.absoluteString + "/" : config.baseURL.absoluteString
         let endpoint = isFullPath ? path : baseURL.appending(path)
-        
+
         guard var urlComponents = URLComponents(string: endpoint) else { throw RequestGenerationError.components }
         var urlQueryItems = [URLQueryItem]()
 
@@ -47,9 +47,9 @@ extension Requestable {
         guard let url = urlComponents.url else { throw RequestGenerationError.components }
         return url
     }
-    
+
     public func urlRequest(with config: NetworkConfigurable) throws -> URLRequest {
-        
+
         let url = try self.url(with: config)
         var urlRequest = URLRequest(url: url)
         var allHeaders: [String: String] = config.headers
@@ -63,7 +63,7 @@ extension Requestable {
         urlRequest.allHTTPHeaderFields = allHeaders
         return urlRequest
     }
-    
+
     private func encodeBody(bodyParamaters: [String: Any], bodyEncoding: BodyEncoding) -> Data? {
         switch bodyEncoding {
         case .jsonSerializationData:

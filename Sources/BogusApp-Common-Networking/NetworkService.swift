@@ -9,16 +9,16 @@ import Foundation
 
 public protocol NetworkService {
     typealias CompletionHandler = (Result<Data?, NetworkError>) -> Void
-    
+
     func request(endpoint: Requestable, completion: @escaping CompletionHandler) -> NetworkCancellable?
 }
 
 public final class DefaultNetworkService: NetworkService {
-    
+
     private let config: NetworkConfigurable
     private let sessionManager: SessionManager
     private let logger: NetworkErrorLogger
-    
+
     public init(config: NetworkConfigurable,
                 sessionManager: SessionManager = DefaultSessionManager(),
                 logger: NetworkErrorLogger = DefaultNetworkErrorLogger()) {
@@ -26,11 +26,11 @@ public final class DefaultNetworkService: NetworkService {
         self.config = config
         self.logger = logger
     }
-    
+
     private func request(request: URLRequest, completion: @escaping CompletionHandler) -> NetworkCancellable {
-        
+
         let sessionDataTask = sessionManager.request(request) { data, response, requestError in
-            
+
             if let requestError = requestError {
                 var error: NetworkError
                 if let response = response as? HTTPURLResponse {
@@ -38,7 +38,7 @@ public final class DefaultNetworkService: NetworkService {
                 } else {
                     error = self.resolve(error: requestError)
                 }
-                
+
                 self.logger.log(error: error)
                 completion(.failure(error))
             } else {
@@ -46,12 +46,12 @@ public final class DefaultNetworkService: NetworkService {
                 completion(.success(data))
             }
         }
-    
+
         logger.log(request: request)
 
         return sessionDataTask
     }
-    
+
     private func resolve(error: Error) -> NetworkError {
         let code = URLError.Code(rawValue: (error as NSError).code)
         switch code {
@@ -60,7 +60,7 @@ public final class DefaultNetworkService: NetworkService {
         default: return .generic(error)
         }
     }
-    
+
     public func request(endpoint: Requestable, completion: @escaping CompletionHandler) -> NetworkCancellable? {
         do {
             let urlRequest = try endpoint.urlRequest(with: config)

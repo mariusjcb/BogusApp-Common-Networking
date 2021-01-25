@@ -11,7 +11,7 @@ extension URLSessionTask: NetworkCancellable { }
 
 public protocol SessionManager {
     typealias CompletionHandler = (Data?, URLResponse?, Error?) -> Void
-    
+
     func request(_ request: URLRequest,
                  completion: @escaping CompletionHandler) -> NetworkCancellable
 }

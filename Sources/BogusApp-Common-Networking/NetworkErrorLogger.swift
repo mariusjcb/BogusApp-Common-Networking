@@ -42,7 +42,7 @@ public final class DefaultNetworkErrorLogger: NetworkErrorLogger {
 
 extension NetworkError {
     public var isNotFoundError: Bool { return hasStatusCode(404) }
-    
+
     public func hasStatusCode(_ codeError: Int) -> Bool {
         switch self {
         case let .error(code, _):

@@ -8,20 +8,20 @@
 import Foundation
 
 public class Endpoint<R>: ResponseRequestable {
-    
+
     public typealias Response = R
-    
+
     public var path: String
     public var isFullPath: Bool
     public var method: HTTPMethodType
     public var headerParamaters: [String: String]
-    public var queryParametersEncodable: Encodable? = nil
+    public var queryParametersEncodable: Encodable?
     public var queryParameters: [String: Any]
-    public var bodyParamatersEncodable: Encodable? = nil
+    public var bodyParamatersEncodable: Encodable?
     public var bodyParamaters: [String: Any]
     public var bodyEncoding: BodyEncoding
     public var responseDecoder: ResponseDecoder
-    
+
     init(path: String,
          isFullPath: Bool = false,
          method: HTTPMethodType,
