@@ -10,7 +10,7 @@ import Foundation
 public protocol Requestable {
     var path: String { get }
     var isFullPath: Bool { get }
-    var method: HTTPMethodType { get }
+    var method: HTTPMethod { get }
     var headerParamaters: [String: String] { get }
     var queryParametersEncodable: Encodable? { get }
     var queryParameters: [String: Any] { get }
@@ -21,11 +21,6 @@ public protocol Requestable {
     func urlRequest(with networkConfig: NetworkConfigurable) throws -> URLRequest
 }
 
-public protocol ResponseRequestable: Requestable {
-    associatedtype Response
-    var responseDecoder: ResponseDecoder { get }
-}
-
 extension Requestable {
 
     func url(with config: NetworkConfigurable) throws -> URL {
@@ -33,7 +28,7 @@ extension Requestable {
         let baseURL = config.baseURL.absoluteString.last != "/" ? config.baseURL.absoluteString + "/" : config.baseURL.absoluteString
         let endpoint = isFullPath ? path : baseURL.appending(path)
 
-        guard var urlComponents = URLComponents(string: endpoint) else { throw RequestGenerationError.components }
+        guard var urlComponents = URLComponents(string: endpoint) else { throw NetworkError.components }
         var urlQueryItems = [URLQueryItem]()
 
         let queryParameters = try queryParametersEncodable?.toDictionary() ?? self.queryParameters
@@ -44,7 +39,7 @@ extension Requestable {
             urlQueryItems.append(URLQueryItem(name: $0.key, value: $0.value))
         }
         urlComponents.queryItems = !urlQueryItems.isEmpty ? urlQueryItems : nil
-        guard let url = urlComponents.url else { throw RequestGenerationError.components }
+        guard let url = urlComponents.url else { throw NetworkError.components }
         return url
     }
 
@@ -72,4 +67,9 @@ extension Requestable {
             return bodyParamaters.queryString.data(using: String.Encoding.ascii, allowLossyConversion: true)
         }
     }
+}
+
+public enum BodyEncoding {
+    case jsonSerializationData
+    case stringEncodingAscii
 }

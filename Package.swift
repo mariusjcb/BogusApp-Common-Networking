@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "BogusApp-Common-Networking",
+    platforms: [
+        .macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v4)
+    ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -13,6 +16,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "BogusApp-Common-Utils", url: "../BogusApp-Common-Utils", .branch("master")),
+        .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.4.1")),
         
         // SwiftLint & Komondor
         .package(url: "https://github.com/Realm/SwiftLint", from: "0.28.1"),
@@ -23,7 +27,10 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "BogusApp-Common-Networking",
-            dependencies: [.product(name: "BogusApp-Common-Utils", package: "BogusApp-Common-Utils")]),
+            dependencies: [
+                .product(name: "BogusApp-Common-Utils", package: "BogusApp-Common-Utils"),
+                .product(name: "Alamofire", package: "Alamofire")
+            ]),
         .testTarget(
             name: "BogusApp-Common-NetworkingTests",
             dependencies: ["BogusApp-Common-Networking"]),
